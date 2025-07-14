@@ -4,6 +4,8 @@ from discord import app_commands, ui, Interaction, ButtonStyle, Embed, Permissio
 import re
 import os
 from dotenv import load_dotenv
+import requests
+from bs4 import BeautifulSoup
 
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
@@ -38,7 +40,6 @@ async def on_ready():
 
 class SuggestionModal(ui.Modal, title="Nouvelle suggestion de jeu"):
     nom = ui.TextInput(label="Nom du jeu", max_length=100)
-    description = ui.TextInput(label="Description", style=discord.TextStyle.paragraph, max_length=500)
     lien = ui.TextInput(label="Lien Steam", max_length=200)
 
     async def on_submit(self, interaction: Interaction):
@@ -47,11 +48,22 @@ class SuggestionModal(ui.Modal, title="Nouvelle suggestion de jeu"):
         match = re.search(r"store\.steampowered\.com/app/(\d+)", self.lien.value)
         if match:
             steam_id = match.group(1)
+        description_steam = "Description non trouvée."
+        if steam_id:
+            try:
+                url = f"https://store.steampowered.com/app/{steam_id}"
+                response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+                soup = BeautifulSoup(response.text, "html.parser")
+                desc_div = soup.find("div", {"class": "game_description_snippet"})
+                if desc_div:
+                    description_steam = desc_div.text.strip()
+            except Exception as e:
+                description_steam = f"Erreur lors de la récupération: {e}"
         embed = Embed(
             title=f"🚀 Nouvelle suggestion de jeu",
             description=(
                 f"**Nom du jeu:**\n{self.nom.value}\n\n"
-                f"**Description:**\n{self.description.value}\n\n"
+                f"**Description Steam:**\n{description_steam}\n\n"
                 f"**Lien Steam:**\n{self.lien.value}\n\n"
                 f"_Suggéré par {interaction.user.mention}_"
             ),
