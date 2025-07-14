@@ -63,7 +63,7 @@ class SuggestionModal(ui.Modal, title="Nouvelle suggestion de jeu"):
             title=f"🚀 Nouvelle suggestion de jeu",
             description=(
                 f"**Nom du jeu:**\n{self.nom.value}\n\n"
-                f"**Description Steam:**\n{description_steam}\n\n"
+                f"**Description:**\n{description_steam}\n\n"
                 f"**Lien Steam:**\n{self.lien.value}\n\n"
                 f"_Suggéré par {interaction.user.mention}_"
             ),
