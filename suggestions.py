@@ -32,7 +32,7 @@ async def on_ready():
         if not deja_envoye:
             embed = Embed(
                 title="Suggestions de jeux",
-                description="Pour faire une suggestion, utilisez le bouton ci-dessous. Entrez les informations nécessaires (nom, description, lien Steam) et j'examinerai votre suggestion au plus vite.",
+                description="Pour faire une suggestion, utilisez le bouton ci-dessous. Entrez les informations nécessaires (le nom et le lien Steam) et j'examinerai votre suggestion au plus vite.",
                 color=0x00ff00
             )
             view = SuggestionView()
